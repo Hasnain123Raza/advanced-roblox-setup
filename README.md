@@ -75,6 +75,8 @@ advanced-roblox-setup/
     npm run build
     ```
 
+    This command runs ESLint checks and compiles TypeScript to Roblox Lua code.
+
 ## Development Workflow
 
 ### Development Server
@@ -88,6 +90,33 @@ npm run watch
 # Terminal 2: Serve Roblox project
 rojo serve
 ```
+
+### Code Quality
+
+The project includes ESLint and Prettier for code quality and style enforcement:
+
+```bash
+# Check for linting errors
+npm run lint
+
+# Auto-fix linting errors
+npm run lint:fix
+
+# Format code with Prettier
+npm run format
+
+# Check code formatting without making changes
+npm run format:check
+```
+
+**Build Process:**
+
+```bash
+# Compile TypeScript to Roblox Lua
+npm run build
+```
+
+This command runs ESLint checks and compiles TypeScript to Roblox Lua code.
 
 ### Asset Management
 
