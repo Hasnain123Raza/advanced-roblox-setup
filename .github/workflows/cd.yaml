@@ -1,0 +1,46 @@
+name: Deploy
+on:
+    push:
+        branches:
+            - main
+
+concurrency:
+    group: deploy-prod
+    cancel-in-progress: true
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20.x"
+                  cache: "npm"
+
+            - run: npm install
+            - run: npm run build
+
+            - name: Install Rokit
+              shell: bash
+              run: |
+                  curl -sSf https://raw.githubusercontent.com/rojo-rbx/rokit/main/scripts/install.sh | bash
+                  echo "$HOME/.rokit/bin" >> $GITHUB_PATH
+
+            - name: Install tools
+              shell: bash
+              run: rokit install
+
+            - name: Build Game
+              shell: bash
+              run: rojo build -o game.rbxl
+
+            - name: Publish Game
+              shell: bash
+              env:
+                  UNIVERSE_ID: ${{ vars.UNIVERSE_ID }}
+                  PLACE_ID: ${{ vars.PLACE_ID }}
+                  API_KEY: ${{ secrets.GAME_DEPLOY_KEY_PROD }}
+              run: rbxcloud experience publish -a "$API_KEY" -u "$UNIVERSE_ID" -p "$PLACE_ID" -t published -f game.rbxl

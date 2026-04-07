@@ -1,0 +1,7 @@
+# https://github.com/rojo-rbx/rokit
+
+[tools]
+rojo = "rojo-rbx/rojo@7.6.1"
+lune = "lune-org/lune@0.10.4"
+asphalt = "jackTabsCode/asphalt@1.2.0"
+rbxcloud = "Sleitnick/rbxcloud@0.17.0"

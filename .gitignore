@@ -1,0 +1,7 @@
+.env
+/node_modules
+/out
+/include
+/generated
+*.tsbuildinfo
+build.rbxlx
