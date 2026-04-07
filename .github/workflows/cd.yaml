@@ -43,4 +43,4 @@ jobs:
                   UNIVERSE_ID: ${{ vars.UNIVERSE_ID }}
                   PLACE_ID: ${{ vars.PLACE_ID }}
                   API_KEY: ${{ secrets.GAME_DEPLOY_KEY_PROD }}
-              run: rbxcloud experience publish -a "$API_KEY" -u "$UNIVERSE_ID" -p "$PLACE_ID" -t published -f game.rbxl
+              run: rbxcloud experience publish -a "$API_KEY" -u "$UNIVERSE_ID" -i "$PLACE_ID" -t published -f game.rbxl
