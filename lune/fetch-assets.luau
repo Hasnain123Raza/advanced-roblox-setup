@@ -122,6 +122,7 @@ local game = roblox.deserializePlace(content)
 
 local workspace = game:GetService("Workspace")
 local lighting = game:GetService("Lighting")
+local starterGui = game:GetService("StarterGui")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local serverStorage = game:GetService("ServerStorage")
 
@@ -130,6 +131,9 @@ fs.writeFile("./assets/Workspace.rbxm", roblox.serializeModel({ workspace }))
 
 print("Saving Lighting...")
 fs.writeFile("./assets/Lighting.rbxm", roblox.serializeModel({ lighting }))
+
+print("Saving StarterGui...")
+fs.writeFile("./assets/StarterGui.rbxm", roblox.serializeModel({ starterGui }))
 
 print("Cleaning ReplicatedStorage assets...")
 for _, file in fs.readDir("./assets/replicated-storage-models") do

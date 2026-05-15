@@ -4,5 +4,7 @@
 /include
 /generated
 *.tsbuildinfo
+build.rbxl
+build.rbxl.lock
 build.rbxlx
 build.rbxlx.lock
