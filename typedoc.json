@@ -1,0 +1,11 @@
+{
+	"$schema": "https://typedoc.org/schema.json",
+	"name": "advanced-roblox-setup",
+	"entryPoints": ["src/shared"],
+	"entryPointStrategy": "expand",
+	"exclude": ["**/__tests__/**", "**/jest.config.ts", "src/shared/assets/**"],
+	"out": "generated-docs",
+	"readme": "none",
+	"treatWarningsAsErrors": true,
+	"validation": { "notExported": true, "invalidLink": true, "notDocumented": true }
+}

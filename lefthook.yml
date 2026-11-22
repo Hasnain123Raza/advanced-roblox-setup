@@ -1,0 +1,35 @@
+# Git hooks. Installed by `npm install` (the `prepare` script).
+# https://lefthook.dev
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: prettier
+      glob: "*.{ts,tsx,js,mjs,json,jsonc,md,yml,yaml}"
+      run: npx prettier --write --ignore-unknown {staged_files}
+      stage_fixed: true
+    - name: eslint
+      glob: "*.{ts,tsx,mjs}"
+      run: npx eslint --fix {staged_files}
+      stage_fixed: true
+    - name: stylua
+      glob: "*.luau"
+      run: stylua {staged_files}
+      stage_fixed: true
+    - name: gitleaks
+      run: gitleaks git --staged --redact --no-banner
+    - name: cspell
+      run: npx cspell --no-progress --no-must-find-files {staged_files}
+
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: npx commitlint --edit {1}
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: typecheck
+      run: npm run typecheck
+    - name: lint
+      run: npm run lint

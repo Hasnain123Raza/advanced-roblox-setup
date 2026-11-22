@@ -1,0 +1,39 @@
+{
+	"compilerOptions": {
+		// Required by roblox-ts. Do not change. TypeScript is pinned to the
+		// exact version roblox-ts bundles (see package.json).
+		"allowSyntheticDefaultImports": true,
+		"downlevelIteration": true,
+		"jsx": "react",
+		"jsxFactory": "React.createElement",
+		"jsxFragmentFactory": "React.Fragment",
+		"module": "commonjs",
+		"moduleResolution": "Node",
+		"moduleDetection": "force",
+		"noLib": true,
+		"resolveJsonModule": true,
+		"experimentalDecorators": true,
+		"forceConsistentCasingInFileNames": true,
+		"target": "ESNext",
+		"typeRoots": ["node_modules/@rbxts"],
+
+		// Strictness beyond `strict`.
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false,
+		// roblox-ts only reports errors in your own files; match that.
+		"skipLibCheck": true,
+
+		// Project layout.
+		"rootDir": "src",
+		"outDir": "out",
+		"baseUrl": "src",
+		"incremental": true,
+		"tsBuildInfoFile": "out/tsconfig.tsbuildinfo"
+	},
+	"include": ["src"]
+}

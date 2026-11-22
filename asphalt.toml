@@ -1,0 +1,17 @@
+#:schema https://raw.githubusercontent.com/jackTabsCode/asphalt/refs/heads/main/schema.json
+# https://github.com/jackTabsCode/asphalt
+
+# The Roblox user or group that owns uploaded assets.
+[creator]
+type = "user"
+id = 4255782155
+
+[codegen]
+typescript = true
+style = "flat"
+
+# Files under assets/ are uploaded by `npm run assets:sync`. The generated
+# module lands in src/shared/assets/ so game code can import it.
+[inputs.assets]
+path = "assets/**/*"
+output_path = "src/shared/assets"

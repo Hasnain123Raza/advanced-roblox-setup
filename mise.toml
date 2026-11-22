@@ -1,0 +1,19 @@
+# Toolchain for this project. Install everything with `mise install`.
+# https://mise.jdx.dev
+
+[tools]
+node = "24.21.0"
+"github:rojo-rbx/rojo" = "7.7.1"
+"github:lune-org/lune" = "0.11.1"
+"github:jackTabsCode/asphalt" = "2.0.2"
+"github:Sleitnick/rbxcloud" = "0.17.0"
+"github:JohnnyMorganz/StyLua" = "2.6.0"
+# The selene zip ships its binary without the executable bit.
+"github:Kampfkarren/selene" = { version = "0.32.0", postinstall = "chmod +x \"$MISE_TOOL_INSTALL_PATH/selene\"" }
+"github:JohnnyMorganz/luau-lsp" = "1.70.1"
+"github:gitleaks/gitleaks" = "8.30.1"
+"aqua:rhysd/actionlint" = "1.7.12"
+
+[settings]
+# Record checksums in mise.lock; CI installs with --locked.
+lockfile = true

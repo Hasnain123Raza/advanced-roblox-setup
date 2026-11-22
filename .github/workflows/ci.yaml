@@ -1,0 +1,140 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  check:
+    name: Lint, type check, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: jdx/mise-action@v5
+        with:
+          cache: true
+
+      - run: npm ci
+      - run: lune setup
+
+      - name: Format
+        run: npm run format:check
+      - name: ESLint
+        run: npm run lint
+      - name: Luau lint and type check
+        run: npm run lint:luau
+      - name: Markdown lint
+        run: npm run lint:md
+      - name: Workflow lint
+        run: npm run lint:ci
+      - name: Spelling
+        run: npm run spell
+      - name: TypeScript
+        run: npm run typecheck
+      - name: Type coverage
+        run: npm run coverage:types
+      - name: Unused code and dependencies
+        run: npm run knip
+      - name: API docs build
+        run: npm run docs
+      - name: Assets match the lockfile
+        run: npm run assets:check
+      - name: Build place
+        run: npm run build
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: game
+          path: build/game.rbxl
+          if-no-files-found: error
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: jdx/mise-action@v5
+        with:
+          cache: true
+          install_args: github:gitleaks/gitleaks
+      - run: gitleaks git --redact --verbose
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/dependency-review-action@v5
+        with:
+          fail-on-severity: high
+
+  test:
+    name: Tests (Roblox engine)
+    needs: check
+    # Runs once the test experience is configured. See README "Tests".
+    # Fork PRs have no access to secrets, so they skip this job.
+    if: vars.ROBLOX_TEST_PLACE_ID != '' && (github.event_name != 'pull_request' || !github.event.pull_request.head.repo.fork)
+    runs-on: ubuntu-latest
+    # One test place is shared, so runs must not overlap.
+    concurrency:
+      group: roblox-tests
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+        with:
+          cache: true
+      - run: npm ci
+      - run: npm test
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_TEST_API_KEY }}
+          ROBLOX_TEST_UNIVERSE_ID: ${{ vars.ROBLOX_TEST_UNIVERSE_ID }}
+          ROBLOX_TEST_PLACE_ID: ${{ vars.ROBLOX_TEST_PLACE_ID }}
+
+  deploy:
+    name: Deploy to Roblox
+    needs: [check, secrets, test]
+    # Deploy pushes to main once every gate passed. Tests may be skipped
+    # until the test experience is configured.
+    if: >-
+      !cancelled()
+      && github.event_name == 'push'
+      && github.ref == 'refs/heads/main'
+      && vars.ROBLOX_PLACE_ID != ''
+      && needs.check.result == 'success'
+      && needs.secrets.result == 'success'
+      && (needs.test.result == 'success' || needs.test.result == 'skipped')
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+        with:
+          cache: true
+          install_args: github:Sleitnick/rbxcloud
+      - uses: actions/download-artifact@v8
+        with:
+          name: game
+          path: build
+      - name: Publish
+        env:
+          RBXCLOUD_API_KEY: ${{ secrets.ROBLOX_DEPLOY_API_KEY }}
+          UNIVERSE_ID: ${{ vars.ROBLOX_UNIVERSE_ID }}
+          PLACE_ID: ${{ vars.ROBLOX_PLACE_ID }}
+        run: rbxcloud experience publish --filename build/game.rbxl --universe-id "$UNIVERSE_ID" --place-id "$PLACE_ID" --version-type published

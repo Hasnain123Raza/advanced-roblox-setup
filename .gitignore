@@ -1,0 +1,22 @@
+# Dependencies and build output
+/node_modules
+/out
+/include
+/build
+/generated-docs
+/.cache
+*.tsbuildinfo
+
+# Rojo
+sourcemap.json
+*.rbxl.lock
+*.rbxlx.lock
+
+# Asphalt
+/.asphalt-debug
+
+# Secrets
+.env
+
+# Local reference clone of Roblox/creator-docs (never committed)
+/roblox-creator-docs

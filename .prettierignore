@@ -1,0 +1,11 @@
+out/
+include/
+build/
+generated-docs/
+.cache/
+place/
+package-lock.json
+src/shared/assets/
+asphalt.lock.toml
+.luaurc
+roblox-creator-docs/
